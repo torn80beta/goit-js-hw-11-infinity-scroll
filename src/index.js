@@ -1,11 +1,9 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import MoreButton from './js/more-button';
 import UrlCreator from './js/url-creator';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const axios = require('axios').default;
-const loadMoreButton = new MoreButton();
 const urlCreator = new UrlCreator();
 let observer;
 const observerOptions = {
@@ -32,7 +30,6 @@ let gallery = new SimpleLightbox('.gallery a', {
 });
 
 refs.formEl.addEventListener('submit', onFormSubmit);
-loadMoreButton.button.addEventListener('click', onLoadMore);
 
 function onFormSubmit(e) {
   e.preventDefault();
