@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page title</title>
+    <link rel="stylesheet" href="./sass/index.scss" />
+    <script type="module" src="./index.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+
+  <body>
+    <div id="top"></div>
+    <form class="search-form" id="search-form">
+      <input
+        type="text"
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images..."
+      />
+      <button class="button" type="submit">Search</button>
+    </form>
+
+    <div class="gallery">
+      <!-- Картки зображень -->
+    </div>
+    <button type="button" class="load-more is-hidden">Load more</button>
+    <div class="up-button">
+      <a id="up-button" class="up-button__link" href="#top">
+        <svg
+          class="animate__infinite animate__slideOutUp animate__slower up-button__icon"
+          width="25"
+          height="37"
+        >
+          <use href="./images/up-button.svg#icon-up"></use>
+        </svg>
+      </a>
+    </div>
+    <script src="./js/anchor-scroll.js" type="module"></script>
+  </body>
+</html>
