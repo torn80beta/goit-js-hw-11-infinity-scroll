@@ -3,10 +3,14 @@ import MoreButton from './js/more-button';
 import UrlCreator from './js/url-creator';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-const axios = require('axios').default;
 
+const axios = require('axios').default;
 const loadMoreButton = new MoreButton();
 const urlCreator = new UrlCreator();
+let observer;
+const observerOptions = {
+  rootMargin: '100px',
+};
 const refs = {
   formEl: document.querySelector('.search-form'),
   galleryEl: document.querySelector('.gallery'),
@@ -17,8 +21,8 @@ const notiflixParams = {
   cssAnimationStyle: 'from-left',
   fontSize: '14px',
   distance: '1px',
+  showOnlyTheLastOne: true,
 };
-
 let gallery = new SimpleLightbox('.gallery a', {
   captions: true,
   captionsData: 'alt',
@@ -32,34 +36,51 @@ loadMoreButton.button.addEventListener('click', onLoadMore);
 
 function onFormSubmit(e) {
   e.preventDefault();
-  loadMoreButton.hide();
   refs.galleryEl.innerHTML = '';
   urlCreator.clearPageValue();
   urlCreator.getQuery();
   if (urlCreator.searchQuery === '') {
-    Notify.warning('Enter your search parameters, please.', notiflixParams);
-    return;
+    return Notify.warning(
+      'Enter your search parameters, please.',
+      notiflixParams
+    );
   } else {
     fetchUrl(urlCreator.getUrl()).then(response => {
-      if (response.totalHits > 40) {
+      if (response.totalHits === 0) {
+        return Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.',
+          notiflixParams
+        );
+      } else if (response.totalHits > 0) {
         Notify.success(`Hooray! We found ${response.totalHits} images.`, {
           ...notiflixParams,
           position: 'left-top',
         });
+        drawCards(response.hits);
+        createObserver();
       }
-      drawCards(response.hits);
-      scroll();
+      return response;
     });
   }
 }
 
-function onLoadMore() {
-  urlCreator.incrementPage();
-  fetchUrl(urlCreator.getUrl()).then(data => {
-    drawCards(data.hits);
-    scroll();
+function onScroll(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      urlCreator.incrementPage();
+      fetchUrl(urlCreator.getUrl()).then(data => {
+        if (data.hits.length === 0) {
+          Notify.info(
+            "We're sorry, but you've reached the end of search results.",
+            notiflixParams
+          );
+          observer.unobserve(entry.target);
+          return;
+        }
+        drawCards(data.hits);
+      });
+    }
   });
-  //console.log(urlCreator.page);
 }
 
 async function fetchUrl(targetUrl) {
@@ -67,20 +88,6 @@ async function fetchUrl(targetUrl) {
   try {
     const response = await axios.get(targetUrl).then(response => {
       data = response.data;
-      if (response.data.hits.length === 0) {
-        loadMoreButton.hide();
-        return Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.',
-          { ...notiflixParams, position: 'center-center' }
-        );
-      } else if (urlCreator.page * 40 >= response.data.totalHits) {
-        loadMoreButton.hide();
-        return Notify.info(
-          "We're sorry, but you've reached the end of search results.",
-          notiflixParams
-        );
-      }
-      loadMoreButton.show();
     });
     return data;
   } catch (error) {
@@ -125,23 +132,9 @@ function drawCards(data) {
   gallery.refresh();
 }
 
-function scroll() {
-  try {
-    const { height: cardHeight } = document
-      .querySelector('.gallery')
-      .firstElementChild.getBoundingClientRect();
-    window.scrollBy({
-      top: cardHeight * 20,
-      behavior: 'smooth',
-    });
-  } catch (error) {
-    console.log(error);
-  }
+function createObserver() {
+  refs.galleryEl.insertAdjacentHTML('afterend', '<div id="scrollArea"></div>');
+  refs.scrollTarget = document.querySelector('#scrollArea');
+  observer = new IntersectionObserver(onScroll, observerOptions);
+  observer.observe(refs.scrollTarget);
 }
-
-// const searchParams = {
-//   image_type: 'photo',
-//   orientation: 'horizontal',
-//   safesearch: 'true',
-// };
-//&safesearch=true
