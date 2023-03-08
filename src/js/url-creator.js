@@ -14,8 +14,9 @@ export default class UrlCreator {
   }
 
   getUrl() {
-    const url = `${this.BASE_URL}?key=${this.API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`;
+    const url = `${this.BASE_URL}?key=${this.API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&per_page=40&page=${this.page}`;
     return url;
+    // &safesearch=true
   }
 
   getQuery() {
