@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster&display=swap');
+
 .example {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -33,11 +35,22 @@ body {
 }
 
 input {
-  width: 300px;
+  width: 500px;
   height: 30px;
   padding: 10px;
   border: 1px solid #2f2f37;
   border-radius: 4px;
+}
+
+.logo h3 {
+  display: inline;
+  /* color: #e74c3c; */
+  color: #ff853e;
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 0.65;
+  font-family: 'Lobster', cursive;
+/*   z-index: 10000; */
 }
 
 button {
