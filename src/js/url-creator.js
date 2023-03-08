@@ -14,13 +14,12 @@ export default class UrlCreator {
   }
 
   getUrl() {
-    // this.getQuery();
     const url = `${this.BASE_URL}?key=${this.API_KEY}&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`;
     return url;
   }
 
   getQuery() {
-    this.searchQuery = this.refs.searchForm.searchQuery.value;
+    this.searchQuery = this.refs.searchForm.searchQuery.value.trim();
   }
 
   incrementPage() {

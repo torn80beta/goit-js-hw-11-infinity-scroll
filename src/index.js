@@ -36,7 +36,7 @@ function onFormSubmit(e) {
   refs.galleryEl.innerHTML = '';
   urlCreator.clearPageValue();
   urlCreator.getQuery();
-  if (urlCreator.searchQuery === '') {
+  if (!urlCreator.searchQuery) {
     return Notify.warning(
       'Enter your search parameters, please.',
       notiflixParams
